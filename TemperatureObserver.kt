@@ -28,18 +28,23 @@ class HeatingSystem() : TemperatureObserver{
     var tempList = mutableListOf<Float>()
 
     override fun update(temp: Float){
+
         when(tempList.size){
             in 0..9 -> tempList.add(temp)
             else -> {   // Wenn 10 Elemente gesichert sind soll das erste Element gelöscht werden,
                         // um so Platz für den neuen Wert zu schaffen. Es sind so immer die letzten 10 Werte gesichert
-                val varList = tempList
-                varList.removeAt(0)
-                varList.add(temp)
-                tempList = varList
+                tempList.removeAt(0)
+                tempList.add(temp)
             }
         }
 
-        //if(tempList.size == 10)
-            // Strategie basierend auf den Temperaturen ausführen
+        if(tempList.size == 10){
+            var heatingStrat : HeatingStrategy
+            heatingStrat = InstantHeatingStrategy()
+            heatingStrat = SensibleHeatingStrategy()
+            heatingStrat = ReasonableHeatingStrategy()
+
+            heatingStrat.needsHeating(tempList)
+        }
     }
 }

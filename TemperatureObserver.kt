@@ -44,7 +44,8 @@ class HeatingSystem() : TemperatureObserver{
             heatingStrat = SensibleHeatingStrategy()
             heatingStrat = ReasonableHeatingStrategy()
 
-            heatingStrat.needsHeating(tempList)
+            if (heatingStrat.needsHeating(tempList))
+                heatingStrat.desc()
         }
     }
 }

@@ -1,9 +1,15 @@
 interface HeatingStrategy{
     fun needsHeating(tempList : List<Float>) : Boolean
+
+    fun desc()
 }
 
 class InstantHeatingStrategy : HeatingStrategy{
     override fun needsHeating(tempList: List<Float>): Boolean = tempList.last() < 19
+
+    override fun desc() {
+        println("Heating house now!")
+    }
 }
 
 class SensibleHeatingStrategy : HeatingStrategy{
@@ -13,6 +19,10 @@ class SensibleHeatingStrategy : HeatingStrategy{
             if(tempList.get(i) < 20) return true
 
         return false
+    }
+
+    override fun desc() {
+        println("Heating sensibly now!")
     }
 }
 
@@ -29,5 +39,9 @@ class ReasonableHeatingStrategy : HeatingStrategy{
             triggerVar = true
 
         return triggerVar
+    }
+
+    override fun desc() {
+        println("Heating reasonable now!")
     }
 }

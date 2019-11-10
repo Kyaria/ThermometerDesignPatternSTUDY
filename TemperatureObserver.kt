@@ -1,18 +1,24 @@
+//Beobachter
+
 interface TemperatureObserver{
-    fun update(temp : Float)
+    fun notify(temp : Float)
 }
 
+// Konkreter Beobachter
+
 class TemperatureAlert(val seekTemp : Float, val message : String) : TemperatureObserver{
-    override fun update(temp: Float){
+    override fun notify(temp: Float){
         if(seekTemp == temp)
             println(message)
     }
 }
 
+// Konkreter Beobachter
+
 class WeatherReport() : TemperatureObserver{
     val tempList = mutableListOf<Float>()
 
-    override fun update(temp: Float){
+    override fun notify(temp: Float){
         when(tempList.size){
             in 0..99 -> tempList.add(temp)
             else -> {
@@ -24,10 +30,12 @@ class WeatherReport() : TemperatureObserver{
     }
 }
 
+// Konkreter Beobachter + (In dieser Datei sekundaer) Programmkontext des Strategiemusters
+
 class HeatingSystem() : TemperatureObserver{
     var tempList = mutableListOf<Float>()
 
-    override fun update(temp: Float){
+    override fun notify(temp: Float){
 
         when(tempList.size){
             in 0..9 -> tempList.add(temp)
@@ -40,12 +48,11 @@ class HeatingSystem() : TemperatureObserver{
 
         if(tempList.size == 10){
             var heatingStrat : HeatingStrategy
-            heatingStrat = InstantHeatingStrategy()
-            heatingStrat = SensibleHeatingStrategy()
+            //heatingStrat = InstantHeatingStrategy()
+            //heatingStrat = SensibleHeatingStrategy()
             heatingStrat = ReasonableHeatingStrategy()
 
-            if (heatingStrat.needsHeating(tempList))
-                heatingStrat.desc()
+            println("Heizung : ${ if( heatingStrat.needsHeating(tempList)) "ON" else "OFF"}")
         }
     }
 }

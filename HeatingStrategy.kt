@@ -1,16 +1,16 @@
+//Abstrakte Strategie
+
 interface HeatingStrategy{
     fun needsHeating(tempList : List<Float>) : Boolean
-
-    fun desc()
 }
+
+//Konkrete Strategie
 
 class InstantHeatingStrategy : HeatingStrategy{
     override fun needsHeating(tempList: List<Float>): Boolean = tempList.last() < 19
-
-    override fun desc() {
-        println("Heating house now!")
-    }
 }
+
+//Konkrete Strategie
 
 class SensibleHeatingStrategy : HeatingStrategy{
     override fun needsHeating(tempList: List<Float>): Boolean{
@@ -20,11 +20,9 @@ class SensibleHeatingStrategy : HeatingStrategy{
 
         return false
     }
-
-    override fun desc() {
-        println("Heating sensibly now!")
-    }
 }
+
+//Konkrete Strategie
 
 class ReasonableHeatingStrategy : HeatingStrategy{
     override fun needsHeating(tempList: List<Float>): Boolean {
@@ -32,16 +30,12 @@ class ReasonableHeatingStrategy : HeatingStrategy{
         var triggerVar = false
         var counter = 0
 
-        tempList.forEach{ if(it < 19) counter++}
-        tempList.forEach{ if(it < 15) triggerVar = true}
+        tempList.forEach { if(it < 19) counter++ }
+        tempList.forEach { if(it < 15) triggerVar = true }
 
         if (counter >= 5)
             triggerVar = true
 
         return triggerVar
-    }
-
-    override fun desc() {
-        println("Heating reasonable now!")
     }
 }

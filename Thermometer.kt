@@ -24,11 +24,11 @@ abstract class Poster{
 * Zusaetzlich wird hier auch direkt in der "setzeZustand" (-> measure()) Methode der neue Zustand
 * direkt an die "benachrichtigen" (-> notifyOnChange(tmp : Float)) Methode geschickt und nicht erst in eine
 * Variable gesichert (-> tmp) um dann die "benachrichtigen" (-> notifyOnChange()) Methode aufzurufen, durch die dann die
-* Beobachter die passende Methoden (-> lastTMP()) fuer die noetigen Werte aufrufen.
+* Beobachter die passende Methoden (hier: -> lastTMP()) fuer die noetigen Werte aufrufen.
 * Dies ergibt sich aus der Aufgabenstellung.
 * */
 
-// Subjekt + Konkretes Subjekt
+// Abstraktes Subjekt + Konkretes Subjekt
 
 class Thermometer (val mainSensor : Sensor){
 
@@ -51,7 +51,7 @@ class Thermometer (val mainSensor : Sensor){
         for(i in 1..n)
             notifyOnChange(mainSensor.getTemparature())
         // Wenn eine Temperatur ausgelesen wird, so wird diese auch gleich an die "benachrichtigen" (-> notifyOnChange()) Methode geschickt
-    }
+    } // Setze Zustand + Zustand + Gib Zustand
 
     /*
     var tmp = 0f

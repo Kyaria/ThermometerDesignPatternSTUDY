@@ -1,3 +1,9 @@
+/*Grund: Wenn die Änderung eines Objekts die Änderung anderer Objekte verlangt,
+* aber nicht bekannt ist, wie viele (und welche) anderen Objekte dies sind.
+* PRO: Abstrakte Kopplung zwischen Subjekt und Beobachter, Broadcast-Kommunikation
+* CON: Overhead bei Benachrichtigung, Ggf. werden teure Operationen angestoßen, da ein Subjekt nichts über die Kosten einer Operation der Beobachter weiß
+* */
+
 //Beobachter
 
 interface TemperatureObserver{
@@ -20,9 +26,10 @@ class WeatherReport() : TemperatureObserver{
 
     override fun notify(temp: Float){
         when(tempList.size){
-            in 0..99 -> tempList.add(temp)
+            in 0..98 -> tempList.add(temp)
             else -> {
                 println("WEATHER REPORT CORE DUMP")
+                tempList.add(temp)
                 tempList.forEach { println("\t" + it) }
                 tempList.clear()
             }
@@ -46,13 +53,12 @@ class HeatingSystem() : TemperatureObserver{
             }
         }
 
-        if(tempList.size == 10){
-            var heatingStrat : HeatingStrategy
-            //heatingStrat = InstantHeatingStrategy()
-            //heatingStrat = SensibleHeatingStrategy()
-            heatingStrat = ReasonableHeatingStrategy()
+        val heatingStrat1 : HeatingStrategy = ReasonableHeatingStrategy()
+        val heatingStrat2 : HeatingStrategy = InstantHeatingStrategy()
+        val heatingStrat3 : HeatingStrategy = SensibleHeatingStrategy()
 
-            println("Heizung : ${ if( heatingStrat.needsHeating(tempList)) "ON" else "OFF"}")
-        }
+        println("Heizung : ${ if( heatingStrat1.needsHeating(tempList)) "ON" else "OFF"}")
+        //println("Heizung : ${ if( heatingStrat2.needsHeating(tempList)) "ON" else "OFF"}")
+        //println("Heizung : ${ if( heatingStrat3.needsHeating(tempList)) "ON" else "OFF"}")
     }
 }

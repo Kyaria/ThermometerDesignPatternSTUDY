@@ -1,6 +1,8 @@
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
+// Ermöglicht das dynamische Hinzufügen zusätzlicher Funktionalität zu einer Komponente
+
 // Abstrakte Komponente
 
 interface Sensor {
@@ -60,7 +62,8 @@ class SensorLogger (s : Sensor) : tmpGeneral(s){
 /*Alternativ: Es ist in Kotlin moeglich dieses Muster auch ohne einen
 * abstrakten Dekorierer kurz und knapp zu verwirklichen. Hier wird dem Compiler gesagt die nicht definierten
 * Methoden auf der val s ausgefuehrt werden sollen. Bedingung ist das auf der besagten
-* Variable auch die benoetigten Methoden implementiert sind.*/
+* Variable auch die benoetigten Methoden implementiert sind.
+* */
 
 class RoundValue (val s : Sensor) : Sensor by s{
     override fun getTemparature(): Float = s.getTemparature().roundToInt().toFloat()

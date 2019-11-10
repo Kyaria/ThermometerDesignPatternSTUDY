@@ -1,3 +1,12 @@
+/*Das Strategiemuster erlaubt unterschiedliche Vorgehensweisen (Algorithmen) unabhaenig
+* vom Programmkontext.
+* Es kapselt die Algorithmen und macht sie austauschbar.
+*
+* Wenn man fuer jede moegliche Algorithmuskombination eine Unterklasse erzeugen wuerde, wuerde das zu einer Klassenexplosion fuehren.
+*
+* PRO: Def. einer Fam. von Algo., Alternative zur Unterklassenbildung
+* CON: Programmkontext muss Strategien kennen, Overhead, mehr Objekte zur Laufzeit*/
+
 //Abstrakte Strategie
 
 interface HeatingStrategy{

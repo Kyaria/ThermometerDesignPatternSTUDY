@@ -1,4 +1,5 @@
 /*
+/*
 abstract class Poster{
     val observerList = mutableListOf<TemperatureObserver>()
 
@@ -27,31 +28,32 @@ abstract class Poster{
 * Beobachter die passende Methoden (hier: -> lastTMP()) fuer die noetigen Werte aufrufen.
 * Dies ergibt sich aus der Aufgabenstellung.
 * */
+ */
 
 // Abstraktes Subjekt + Konkretes Subjekt
+// Macht Sinn fuer nur ein zu beobachtendes Objekt
 
 class Thermometer (val mainSensor : Sensor){
 
-    val observerList = mutableListOf<TemperatureObserver>()
+    private val observerList = mutableListOf<TemperatureObserver>() //alle beobachter
 
-    fun register (TMPobserver: TemperatureObserver){
-        observerList.add(TMPobserver)
+    fun register (obs: TemperatureObserver){ //anmelden
+        observerList.add(obs)
     }
 
-    fun unregister (TMPobserver: TemperatureObserver){
-        observerList.remove(TMPobserver)
+    fun unregister (obs: TemperatureObserver){ //abmelden
+        observerList.remove(obs)
     }
 
-    fun notifyOnChange(tmp : Float){
-        for (TMPobserver in observerList)
-            TMPobserver.notify(tmp) //Alle Beobachter werden aktualisiert.
+    fun notify(tmp : Float){ //benachrichtige alle beobachter
+        for (obs in observerList)
+            obs.notified(tmp)
     }
 
-    fun measure(n : Int) {
+    fun measure(n : Int) { //setze zustand, gib zustand, zustand
         for(i in 1..n)
-            notifyOnChange(mainSensor.getTemparature())
-        // Wenn eine Temperatur ausgelesen wird, so wird diese auch gleich an die "benachrichtigen" (-> notifyOnChange()) Methode geschickt
-    } // Setze Zustand + Zustand + Gib Zustand
+            notify(mainSensor.getTemparature())
+    }
 
     /*
     var tmp = 0f

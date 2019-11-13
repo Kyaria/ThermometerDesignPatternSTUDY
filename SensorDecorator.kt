@@ -11,35 +11,31 @@ interface Sensor {
 
 // Konkrete Komponenten (Der Kern unserer Programmzwiebel!)
 
+//returns random floats in predefined boundrys
+
 class RandomSensor (val min : Double, val max : Double) : Sensor{
     override fun getTemparature(): Float = Random.nextDouble(min, max).toFloat()
 }
 
+//returns floats based on a random float and a random rising/sinking pattern
+
 class UpDownSensor : Sensor{
 
-    private var rndValue = Random.nextFloat() * 100
+    private var rndValue = Random.nextDouble(-15.0, 45.0).toFloat()
 
-    override fun getTemparature(): Float{
-        val ranInt = Random.nextInt(1, 5)
-
-        if (ranInt >= 4)
-            rndValue += 1f
-        else if (ranInt <= 2)
-            rndValue -= 1f
-
-        return rndValue
-    }
+    override fun getTemparature(): Float = rndValue + Random.nextInt(-1, 1)
 }
 
+/*
 // Abstract Decorator
 
-open class tmpGeneral(val decSensor : Sensor) : Sensor {
-    override fun getTemparature(): Float = decSensor.getTemparature()
+//open class tmpGeneral(val decSensor : Sensor) : Sensor {
+    //override fun getTemparature(): Float = decSensor.getTemparature()
 
     //BSP.:
     // fun getObj(){ println(this) }
     // Muss jz nicht mehr oft neu implementiert werden.
-}
+//}
 
 // Konkrete Dekorierer
 
@@ -50,14 +46,14 @@ open class tmpGeneral(val decSensor : Sensor) : Sensor {
 * Dekorierer die gleich bleibenden Methoden. Siehe BSP.
 * */
 
-class SensorLogger (s : Sensor) : tmpGeneral(s){
-    override fun getTemparature(): Float {
+//class SensorLogger (s : Sensor) : tmpGeneral(s){
+    //override fun getTemparature(): Float {
 
-        val tmp = super.getTemparature()
-        println(tmp)
-        return tmp
-    }
-}
+        //val tmp = super.getTemparature()
+        //println(tmp)
+        //return tmp
+    //}
+//}
 
 /*Alternativ: Es ist in Kotlin moeglich dieses Muster auch ohne einen
 * abstrakten Dekorierer kurz und knapp zu verwirklichen. Hier wird dem Compiler gesagt die nicht definierten
@@ -65,36 +61,49 @@ class SensorLogger (s : Sensor) : tmpGeneral(s){
 * Variable auch die benoetigten Methoden implementiert sind.
 * */
 
-class RoundValue (val s : Sensor) : Sensor by s{
-    override fun getTemparature(): Float = s.getTemparature().roundToInt().toFloat()
-}
+*/
 
-class IgnoreDuplicates (s : Sensor) : tmpGeneral(s){
+//logs temps on console
 
-    private var oldValue = 0f
-
-    override fun getTemparature(): Float{
-        var tmp = 0f
-
-        do{
-            tmp = super.getTemparature()
-        }
-        while (tmp.toInt() == oldValue.toInt())
-
-        oldValue = tmp
-
+class SensorLogger (val s : Sensor) : Sensor{
+    override fun getTemparature(): Float {
+        val tmp = s.getTemparature()
+        println(tmp)
         return tmp
     }
 }
 
-class SensorLimits (s : Sensor, val min : Double, val max : Double) : tmpGeneral(s){
-    override fun getTemparature(): Float{
-        var tmp = 0f
+//rounds values to nearest int
 
-        do{
-            tmp = super.getTemparature()
+class RoundValue (val s : Sensor) : Sensor{
+    override fun getTemparature(): Float = s.getTemparature().roundToInt().toFloat()
+}
+
+//
+
+class IgnoreDuplicates (val s : Sensor) : Sensor{
+
+    private var oldValue = 0f
+
+    override fun getTemparature(): Float{
+        var tmp = s.getTemparature()
+
+        while (tmp.toInt() == oldValue.toInt()){
+            tmp = s.getTemparature()
         }
-        while (tmp !in min..max)
+
+        oldValue = tmp
+        return tmp
+    }
+}
+
+class SensorLimits (val s : Sensor, val min : Double, val max : Double) : Sensor{
+    override fun getTemparature(): Float{
+        var tmp = s.getTemparature()
+
+        while (tmp !in min..max){
+            tmp = s.getTemparature()
+        }
 
         return tmp
     }

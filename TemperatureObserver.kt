@@ -4,61 +4,66 @@
 * CON: Overhead bei Benachrichtigung, Ggf. werden teure Operationen angestoßen, da ein Subjekt nichts über die Kosten einer Operation der Beobachter weiß
 * */
 
-//Beobachter
+//generelles beobachter interface
+// keine std. implementierung benoetigt
 
 interface TemperatureObserver{
-    fun notify(temp : Float)
+    fun notified(temp : Float)
 }
 
-// Konkreter Beobachter
+// konkreter beobachter
+// print message when temperatur gleich der gesuchten
 
 class TemperatureAlert(val seekTemp : Float, val message : String) : TemperatureObserver{
-    override fun notify(temp: Float){
+    override fun notified(temp: Float){
         if(seekTemp == temp)
             println(message)
     }
 }
 
-// Konkreter Beobachter
+// konkreter beobachter
+// save 100 temps, print them all out, repeat
 
 class WeatherReport() : TemperatureObserver{
-    val tempList = mutableListOf<Float>()
+    private val tempList = mutableListOf<Float>()
 
-    override fun notify(temp: Float){
+    override fun notified(temp: Float){
         when(tempList.size){
             in 0..98 -> tempList.add(temp)
             else -> {
-                println("WEATHER REPORT CORE DUMP")
                 tempList.add(temp)
-                tempList.forEach { println("\t" + it) }
+
+                println("WEATHER REPORT CORE DUMP")
+                println(tempList)
+
                 tempList.clear()
             }
         }
     }
 }
 
-// Konkreter Beobachter + (In dieser Datei sekundaer) Programmkontext des Strategiemusters
+// konkreter beobachter
+// save 10 last temps, turn heating based on those temps and the choosen strategy on or off
+// (In dieser Datei sekundaer) Programmkontext des Strategiemusters
 
 class HeatingSystem() : TemperatureObserver{
-    var tempList = mutableListOf<Float>()
+    private var tempList = mutableListOf<Float>()
 
-    override fun notify(temp: Float){
-
+    override fun notified(temp: Float){
         when(tempList.size){
             in 0..9 -> tempList.add(temp)
-            else -> {   // Wenn 10 Elemente gesichert sind soll das erste Element gelöscht werden,
-                        // um so Platz für den neuen Wert zu schaffen. Es sind so immer die letzten 10 Werte gesichert
+            else -> {
                 tempList.removeAt(0)
                 tempList.add(temp)
             }
         }
 
-        val heatingStrat1 : HeatingStrategy = ReasonableHeatingStrategy()
-        val heatingStrat2 : HeatingStrategy = InstantHeatingStrategy()
-        val heatingStrat3 : HeatingStrategy = SensibleHeatingStrategy()
+        var heatingStrat : HeatingStrategy = ReasonableHeatingStrategy()
+        //heatingStrat = InstantHeatingStrategy()
+        //heatingStrat = SensibleHeatingStrategy()
 
-        println("Heizung : ${ if( heatingStrat1.needsHeating(tempList)) "ON" else "OFF"}")
-        //println("Heizung : ${ if( heatingStrat2.needsHeating(tempList)) "ON" else "OFF"}")
-        //println("Heizung : ${ if( heatingStrat3.needsHeating(tempList)) "ON" else "OFF"}")
+        println("Heizung : ${ if( heatingStrat.needsHeating(tempList)) "ON" else "OFF"}\n")
+        //println("Heizung : ${ if( heatingStrat.needsHeating(tempList)) "ON" else "OFF"}\n")
+        //println("Heizung : ${ if( heatingStrat.needsHeating(tempList)) "ON" else "OFF"}\n")
     }
 }

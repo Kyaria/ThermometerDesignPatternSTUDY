@@ -1,29 +1,39 @@
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
-// Ermöglicht das dynamische Hinzufügen zusätzlicher Funktionalität zu einer Komponente
-
-// Abstrakte Komponente
+/*Grund:
+* 1/ Dynamisches Hinzufügen (und Entfernen) von Funktionalität zu einzelnen Objekten
+* 2/ Vermeidung von Klassenexplosionen wenn viele verschiede Kombinationen von Funktionalität erforderlich sind
+* 3/ Vermeidung von unnötiger Vererbung und Codeverdoppelung
+*
+* PRO: Höhere Flexibilität
+* CON: Viele kleine Objekte zur Laufzeit,
+*      Reihenfolge der Dekorationen kann Verhalten beeinflussen, eventuell Nebeneffekte,
+*      Dekoration und seine Komponenten sind nicht identisch (bei Objektidentitätsvergleich)
+*
+* Zu beachten:
+* 1/ Kann schwer zu durchschauen / warten sein.
+* */
 
 interface Sensor {
     fun getTemparature() : Float
 }
 
-// Konkrete Komponenten (Der Kern unserer Programmzwiebel!)
-
-//returns random floats in predefined boundrys
+// Gibt zufällige Werte innerhalb eines Wertebereiches aus.
 
 class RandomSensor (val min : Double, val max : Double) : Sensor{
     override fun getTemparature(): Float = Random.nextDouble(min, max).toFloat()
 }
 
-//returns floats based on a random float and a random rising/sinking pattern
+// Gibt realistische Wertschwankungen auf. BSP.: Temperaturen steigen / sinken um 1 Grad oder bleiben gleich.
 
 class UpDownSensor : Sensor{
-
     private var rndValue = Random.nextDouble(-15.0, 45.0).toFloat()
 
-    override fun getTemparature(): Float = rndValue + Random.nextInt(-1, 1)
+    override fun getTemparature(): Float{
+        rndValue += Random.nextDouble(-1.0, 1.0).toFloat()
+        return rndValue
+    }
 }
 
 /*
@@ -63,7 +73,7 @@ class UpDownSensor : Sensor{
 
 */
 
-//logs temps on console
+// Gegebener Wert wird auf der Konsole geloggt.
 
 class SensorLogger (val s : Sensor) : Sensor{
     override fun getTemparature(): Float {
@@ -73,16 +83,15 @@ class SensorLogger (val s : Sensor) : Sensor{
     }
 }
 
-//rounds values to nearest int
+// Gegebene Werte werden auf den nächsten Integer gerunden.
 
 class RoundValue (val s : Sensor) : Sensor{
     override fun getTemparature(): Float = s.getTemparature().roundToInt().toFloat()
 }
 
-//
+// Bei doppeltem Wert wird ein neuer angefragt.
 
 class IgnoreDuplicates (val s : Sensor) : Sensor{
-
     private var oldValue = 0f
 
     override fun getTemparature(): Float{
@@ -96,6 +105,8 @@ class IgnoreDuplicates (val s : Sensor) : Sensor{
         return tmp
     }
 }
+
+// Soll alle werte die nicht innerhalb der gegebenen Grenzen sind neu anfragen.
 
 class SensorLimits (val s : Sensor, val min : Double, val max : Double) : Sensor{
     override fun getTemparature(): Float{

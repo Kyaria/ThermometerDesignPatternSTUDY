@@ -1,5 +1,4 @@
 /*
-/*
 abstract class Poster{
     val observerList = mutableListOf<TemperatureObserver>()
 
@@ -19,38 +18,37 @@ abstract class Poster{
 }
  */
 
-/* Normalerweise hat man bei dem Observer-Muster eine Oberklasse die die Methoden bereit stellt
-* um einem das Leben einfacher zu machen wenn mann mehrere Objekte observieren will aber hier
-* ist das nicht noetig, da es nur das Thermometer zu beobachten gilt.
-* Zusaetzlich wird hier auch direkt in der "setzeZustand" (-> measure()) Methode der neue Zustand
-* direkt an die "benachrichtigen" (-> notifyOnChange(tmp : Float)) Methode geschickt und nicht erst in eine
-* Variable gesichert (-> tmp) um dann die "benachrichtigen" (-> notifyOnChange()) Methode aufzurufen, durch die dann die
+/* Normalerweise hat man bei dem Observer-Muster eine Oberklasse die die Methoden bereit
+* stellt um einem das Leben einfacher zu machen wenn mann mehrere Objekte observieren will
+* aber hier ist das nicht noetig, da es nur das Thermometer zu beobachten gilt.
+* Zusaetzlich wird hier auch direkt in der "setzeZustand" (-> measure()) Methode der
+* neue Zustand direkt an die "benachrichtigen" (-> notifyOnChange(tmp : Float)) Methode
+* geschickt und nicht erst in eine Variable gesichert (-> tmp) um dann die
+* "benachrichtigen" (-> notifyOnChange()) Methode aufzurufen, durch die dann die
 * Beobachter die passende Methoden (hier: -> lastTMP()) fuer die noetigen Werte aufrufen.
 * Dies ergibt sich aus der Aufgabenstellung.
 * */
- */
 
 // Abstraktes Subjekt + Konkretes Subjekt
-// Macht Sinn fuer nur ein zu beobachtendes Objekt
 
 class Thermometer (val mainSensor : Sensor){
 
-    private val observerList = mutableListOf<TemperatureObserver>() //alle beobachter
+    private val observerList = mutableListOf<TemperatureObserver>() // Alle Beobachter
 
-    fun register (obs: TemperatureObserver){ //anmelden
+    fun register (obs: TemperatureObserver){ // Beobachter anmelden
         observerList.add(obs)
     }
 
-    fun unregister (obs: TemperatureObserver){ //abmelden
+    fun unregister (obs: TemperatureObserver){ // Beobachter abmelden
         observerList.remove(obs)
     }
 
-    fun notify(tmp : Float){ //benachrichtige alle beobachter
+    fun notify(tmp : Float){ // Benachrichtige alle Beobachter
         for (obs in observerList)
             obs.notified(tmp)
     }
 
-    fun measure(n : Int) { //setze zustand, gib zustand, zustand
+    fun measure(n : Int) { // Setzt Zustand / ist Zustand, Gibt Zustand
         for(i in 1..n)
             notify(mainSensor.getTemparature())
     }

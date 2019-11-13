@@ -2,12 +2,25 @@
 * vom Programmkontext.
 * Es kapselt die Algorithmen und macht sie austauschbar.
 *
-* Wenn man fuer jede moegliche Algorithmuskombination eine Unterklasse erzeugen wuerde, wuerde das zu einer Klassenexplosion fuehren.
+* Grund:
+* 1/ Verschiedene Klassen, die sich nur in einem Verhalten unterscheiden .
+* 2/ Vermeidung von Klassenexplosionen, wenn für jeden Algorithmus eine neue Unterklasse erzeugt werden müsste.
+* 3/ Vermeidung von Codeduplizierung, wenn mehrere Klassen den gleichen Algorithmus brauchen.
+* 4/ Vermeidung von unflexiblen Klassen die alle Algorithmen implementieren.
+* 5/ Einfache Konfigurierbarkeit:
+*   -> Je nach Situation müssen Algorithmen ausgetauscht oder neue ergänztwerden.
+* 6/ Vermeidung komplexer Mehrfachverzweigung,  die von einem bestimmten Zustand abhängen.
+*
 *
 * PRO: Def. einer Fam. von Algo., Alternative zur Unterklassenbildung
-* CON: Programmkontext muss Strategien kennen, Overhead, mehr Objekte zur Laufzeit*/
-
-// Beim Strategiemuster lagert man das veraenderliche Verhalten (ALGO / STRAT) in ein weiteres Objekt aus und delegiert die Arbeit an dieses Objekt
+* CON: Programmkontext muss Strategien kennen, Overhead, mehr Objekte zur Laufzeit
+*
+* Zu beachten:
+* 1/ Bei Vererbung lässt sich Verhalten nur zur Kompilierzeit festlegen,
+* und kann nicht zur Laufzeit konfiguriert werden
+* 2/ Änderungen an der Oberklasse haben Auswirkungen auf alle Unterklassen,
+* dies führt zu teils unerwünschten Abhängigkeiten
+* */
 
 //Abstrakte Strategie
 
@@ -16,21 +29,20 @@ interface HeatingStrategy{
 }
 
 //Konkrete Strategie
-//heating starts when last temp smaller than 19
+
+// Es wird geheizt wenn der letzte Wert kleiner als 19 ist.
 
 class InstantHeatingStrategy : HeatingStrategy{
     override fun needsHeating(tempList: List<Float>): Boolean = tempList.last() < 19
 }
 
-//Konkrete Strategie
-//
+// Von den letzten 10 Werten soll min. einer unter 20 sein damit geheizt wird.
 
 class SensibleHeatingStrategy : HeatingStrategy{
     override fun needsHeating(tempList: List<Float>): Boolean = tempList.any { x : Float -> if (x < 20) true else false }
 }
 
-//Konkrete Strategie
-//true when the 5 last readings where beneath 19 degrees or when 1 reading was beneath 15 degrees
+// Es wird geheizt wenn a/ min. 5 Werte unter 19 sind oder wenn b/ min. 1 Wert unter 15 ist.
 
 class ReasonableHeatingStrategy : HeatingStrategy{
     override fun needsHeating(tempList: List<Float>): Boolean =

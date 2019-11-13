@@ -1,18 +1,26 @@
-/*Grund: Wenn die Änderung eines Objekts die Änderung anderer Objekte verlangt,
+/*Grund:
+* 1/ Wenn die Änderung eines Objekts die Änderung anderer Objekte verlangt,
 * aber nicht bekannt ist, wie viele (und welche) anderen Objekte dies sind.
+* 2/ Es besteht eine Abhängigkeit zwischen Objekten, diese sollen aber unabhängig verändert werden können
+* 3/ Der Benachrichtigungsmechanismussoll abstrahiertwerden
+*
 * PRO: Abstrakte Kopplung zwischen Subjekt und Beobachter, Broadcast-Kommunikation
-* CON: Overhead bei Benachrichtigung, Ggf. werden teure Operationen angestoßen, da ein Subjekt nichts über die Kosten einer Operation der Beobachter weiß
+* CON: Overhead bei Benachrichtigung, Ggf. werden teure Operationen angestoßen
+*
+* Zu bedenken:
+* 1/ Falls ein Beobachter mehrere Subjekte beobachtet, muss die Benachrichtigung klarstellen,
+* welches Subjekt sich geänert hat
+* 2/ Subjektzustand sollte sich nicht ändern bevor Beobachter den Zustand nach Benachrichtigung abgefragt haben
 * */
 
-//generelles beobachter interface
-// keine std. implementierung benoetigt
+// Abstraktes Beobachter Interface
 
 interface TemperatureObserver{
     fun notified(temp : Float)
 }
 
-// konkreter beobachter
-// print message when temperatur gleich der gesuchten
+// Konkreter Beobachter
+// Wenn gesuchter Wert gefunden wird soll die mitgegebene Nachricht ausgegeben werden.
 
 class TemperatureAlert(val seekTemp : Float, val message : String) : TemperatureObserver{
     override fun notified(temp: Float){
@@ -21,8 +29,8 @@ class TemperatureAlert(val seekTemp : Float, val message : String) : Temperature
     }
 }
 
-// konkreter beobachter
-// save 100 temps, print them all out, repeat
+// Konkreter Beobachter
+// Speichert 100 Werte, gibt sie dann aus und wiederholt diesen Vorgang
 
 class WeatherReport() : TemperatureObserver{
     private val tempList = mutableListOf<Float>()
@@ -42,9 +50,8 @@ class WeatherReport() : TemperatureObserver{
     }
 }
 
-// konkreter beobachter
-// save 10 last temps, turn heating based on those temps and the choosen strategy on or off
-// (In dieser Datei sekundaer) Programmkontext des Strategiemusters
+// Konkreter Beobachter / Programmkontext des Strategiemusters
+// Speichert immer die letzten 10 Werte und führt dann eine Heizstrategie mit diesen Werten aus.
 
 class HeatingSystem() : TemperatureObserver{
     private var tempList = mutableListOf<Float>()

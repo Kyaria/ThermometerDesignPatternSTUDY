@@ -106,7 +106,7 @@ class IgnoreDuplicates (val s : Sensor) : Sensor{
     }
 }
 
-// Soll alle werte die nicht innerhalb der gegebenen Grenzen sind neu anfragen.
+// Soll alle Werte die nicht innerhalb der gegebenen Grenzen sind neu anfragen.
 
 class SensorLimits (val s : Sensor, val min : Double, val max : Double) : Sensor{
     override fun getTemparature(): Float{

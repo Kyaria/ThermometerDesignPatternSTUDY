@@ -39,7 +39,8 @@ class InstantHeatingStrategy : HeatingStrategy{
 // Von den letzten 10 Werten soll min. einer unter 20 sein damit geheizt wird.
 
 class SensibleHeatingStrategy : HeatingStrategy{
-    override fun needsHeating(tempList: List<Float>): Boolean = tempList.any { x : Float -> if (x < 20) true else false }
+    override fun needsHeating(tempList: List<Float>): Boolean = tempList.any { it < 20 }
+    // Wahr sobald min ein Element auf das Prädikat zutrifft
 }
 
 // Es wird geheizt wenn a/ min. 5 Werte unter 19 sind oder wenn b/ min. 1 Wert unter 15 ist.
@@ -47,5 +48,5 @@ class SensibleHeatingStrategy : HeatingStrategy{
 class ReasonableHeatingStrategy : HeatingStrategy{
     override fun needsHeating(tempList: List<Float>): Boolean =
         tempList.fold(0f, { acc : Float, curr : Float -> if(curr < 19) acc + 1 else acc }) >= 5 ||
-            tempList.any{ x : Float -> if(x < 15) true else false }
+                tempList.any{ it < 15 }
 }

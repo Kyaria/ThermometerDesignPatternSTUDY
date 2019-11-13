@@ -54,7 +54,7 @@ class WeatherReport() : TemperatureObserver{
 // Speichert immer die letzten 10 Werte und führt dann eine Heizstrategie mit diesen Werten aus.
 
 class HeatingSystem() : TemperatureObserver{
-    private var tempList = mutableListOf<Float>()
+    private val tempList = mutableListOf<Float>()
 
     override fun notified(temp: Float){
         when(tempList.size){
